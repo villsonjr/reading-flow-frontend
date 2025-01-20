@@ -1,0 +1,21 @@
+<div class="grid xd gap-4 justify-items-center">
+    <ng-container *ngIf="isMod">
+        <a (click)="openGenreModal(null)" matTooltip="Adicionar um novo Gênero"
+            class="bg-white/10 rounded-lg p-4 mobile:size-32 tablet:size-40 flex flex-col justify-center 
+            items-center text-center cursor-pointer text-white hover:text-orange-400">
+            <div class="flex flex-1 items-center">
+                <mat-icon fontSet="fas" fontIcon="fa-plus" class="text-3xl"></mat-icon>
+            </div>
+            <div> Adicionar Gênero </div>
+        </a>
+    </ng-container>
+
+    <a *ngFor="let genre of genres" (click)="openGenreModal(genre)"
+        class="bg-stone-800 rounded-lg p-4 mobile:size-32 tablet:size-40 flex flex-col justify-center 
+        items-center text-center cursor-pointer text-white hover:text-orange-400">
+        <div class="flex flex-1 items-center">
+            <mat-icon fontSet="fas" [fontIcon]="genre.icon" class="text-3xl !size-auto"></mat-icon>
+        </div>
+        <div class="mobile:text-xs laptop:text-base"> {{ genre.name }} </div>
+    </a>
+</div>

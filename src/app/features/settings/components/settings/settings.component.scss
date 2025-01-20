@@ -1,0 +1,10 @@
+.mat-slide-toggle-bar {
+    margin-right: 80px !important;
+}
+
+.icon-wrapper {
+    &:hover {
+        transition: all .25s;
+        background-color: darken(#f97316, 5%);
+    }
+}

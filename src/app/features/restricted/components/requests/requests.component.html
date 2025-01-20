@@ -1,0 +1,111 @@
+<div class="mobile:min-w-max tablet:min-w-max laptop:min-w-0">
+    <div class="items-center w-full p-4 bg-stone-800 rounded-lg shadow-md mb-4">
+
+        <div class="flex justify-between w-full items-center">
+            <h1 class="font-semibold text-xl">Solicitações</h1>
+
+            <mat-form-field appearance="fill" class="w-5/12 custom-mat-form-field">
+                <mat-label>Filtro</mat-label>
+                <input matInput type="text" matTooltip="Filtrar Leituras por palavras chave" [(ngModel)]="filter"
+                    #ctrl="ngModel" (keyup)="applyFilter($event)" #fil placeholder="Ex. How To Learn a Foreign Language"
+                    class="custom-input">
+                <mat-icon matSuffix (click)="clearFilterReading()" class="text-white">
+                    {{ hasText ? 'close' : '' }}
+                </mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div class="flex flex-col mb-4">
+            <div class="table-shadow">
+                <table mat-table [dataSource]="dataSourceRequests" matSort>
+
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="centered-sorted-header !font-bold">
+                            Data </th>
+                        <td mat-cell *matCellDef="let request" class="even-row odd-row !text-center"> {{
+                            request.requestedDate | date: 'dd/MM/yyyy' }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="title">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="!font-bold"> Título </th>
+                        <td mat-cell *matCellDef="let request" class="even-row odd-row"> {{ request.bookTitle }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="author">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="!font-bold"> Author </th>
+                        <td mat-cell *matCellDef="let request" class="even-row odd-row"> {{ request.authorName }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="owner">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="centered-sorted-header !font-bold">
+                            Solicitante </th>
+                        <td mat-cell *matCellDef="let request" class="even-row odd-row !text-center">
+                            {{request.owner.name }}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="centered-sorted-header !font-bold">
+                            Status </th>
+                        <td mat-cell *matCellDef="let request" class="even-row odd-row !text-center" [ngClass]="{
+                        'text-blue-400': request.status === 'CREATED',
+                        'text-yellow-400': request.status === 'IN_PROGRESS',
+                        'text-red-400': request.status === 'CANCELED',
+                        'text-ulk-green': request.status === 'COMPLETE' }">
+                            <div class="border-2 rounded-md p-2 m-auto w-36 text-center" [ngClass]="{
+                            'border-blue-400': request.status === 'CREATED',
+                            'border-yellow-400': request.status === 'IN_PROGRESS',
+                            'border-red-400': request.status === 'CANCELED',
+                            'border-ulk-green': request.status === 'COMPLETE' }">
+                                {{ request.getStatus() }}
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="responsible">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="centered-sorted-header !font-bold">
+                            Responsável </th>
+                        <td mat-cell *matCellDef="let request" class="even-row odd-row !text-center">
+                            {{ request.assigned.name || 'Não Vinculado' }}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="book">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="!font-bold"> Livro </th>
+                        <td mat-cell *matCellDef="let request" class="even-row odd-row">
+                            {{ request.book.gDriveID || 'Não Vinculado' }}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef disableSort
+                            class="centered-sorted-header header-acttion cursor-pointer !font-bold"> Ações </th>
+                        <td mat-cell *matCellDef="let request" class="even-row odd-row !text-center">
+                            <button mat-icon-button color="primary" (click)="openRequestedBookModal(request)"
+                                matTooltip="Visualizar Solicitação">
+                                <mat-icon fontSet="fas" fontIcon="fa-eye" class="editIcon text-xl"></mat-icon>
+                            </button>
+
+                            <ng-container *ngIf="request.assigned.name == null">
+                                <button mat-icon-button (click)="assignRequest(request)"
+                                    matTooltip="Vincular Solicitação">
+                                    <mat-icon fontSet="fas" fontIcon="fa-play"
+                                        class="text-green-400 text-xl"></mat-icon>
+                                </button>
+                            </ng-container>
+
+                            <button mat-icon-button (click)="remove(request)" matTooltip="Remover Solicitação">
+                                <mat-icon fontSet="fas" fontIcon="fa-trash" class="text-red-600 text-xl"></mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-darkTheme"></tr>
+                    <tr mat-row *matRowDef="let request; columns: displayedColumns;"></tr>
+
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="h-14 text-center" colspan="100%">
+                            {{ hasText ?
+                            'Nenhum registro encontrado para o filtro: '.concat(fil.value) :
+                            'Nenhum registro encontrado' }}
+                        </td>
+                    </tr>
+                </table>
+                <mat-paginator [pageSizeOptions]="[10, 5, 20, 100]"></mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>

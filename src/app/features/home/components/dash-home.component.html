@@ -1,0 +1,129 @@
+<div class="h-full flex flex-col space-y-2">
+    <div class="grid laptop:grid-cols-7 tablet:grid-cols-3 mobile:grid-cols-2 gap-4">
+        <div class="bg-stone-800 flex flex-1 h-[100px] rounded-lg shadow-lg items-center justify-center laptop:order-1 mobile:order-2 mobile:text-xs laptop:text-base"
+            matTooltip="Livros disponíveis na Biblioteca">
+            <div class="w-20 h-full flex items-center justify-center text-orange-400">
+                <i data-feather="book" class="w-10 h-10"></i>
+            </div>
+            <div class="flex-1 flex flex-col p-4 justify-center">
+                <p class="font-semibold">Livros</p>
+                <div class="flex-1 flex items-center">
+                    <p class="mobile:text-xs laptop:text-xl text-orange-400">{{bookCount | numberDotsPipe}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-stone-800 flex flex-1 h-[100px] rounded-lg shadow-lg items-center justify-center laptop:order-2 mobile:order-3 mobile:text-xs laptop:text-base"
+            matTooltip="Autores Registrados">
+            <div class="w-20 h-full flex items-center justify-center text-orange-400">
+                <i data-feather="user" class="w-10 h-10"></i>
+            </div>
+            <div class="flex-1 flex flex-col p-4 justify-center">
+                <p class="font-semibold">Autores</p>
+                <div class="flex-1 flex items-center">
+                    <p class="mobile:text-xs laptop:text-xl text-orange-400">{{authorCount | numberDotsPipe}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-stone-800 flex flex-1 h-[100px] rounded-lg shadow-lg items-center justify-center laptop:order-3 mobile:order-4 mobile:text-xs laptop:text-base"
+            matTooltip="Leituras Registradas no Período">
+            <div class="w-20 h-full flex items-center justify-center text-orange-400">
+                <i data-feather="book-open" class="w-10 h-10"></i>
+            </div>
+            <div class="flex-1 flex flex-col p-4 justify-center">
+                <p class="font-semibold">Leituras</p>
+                <div class="flex-1 flex items-center">
+                    <p class="mobile:text-xs laptop:text-xl text-orange-400">{{readingsCount | numberDotsPipe}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-stone-800 flex flex-1 h-[100px] rounded-lg shadow-lg items-center justify-center laptop:order-4 mobile:order-5 mobile:text-xs laptop:text-base"
+            matTooltip="Total de Páginas Lidas">
+            <div class="w-20 h-full flex items-center justify-center text-orange-400">
+                <i data-feather="file-text" class="w-10 h-10"></i>
+            </div>
+            <div class="flex-1 flex flex-col p-4 justify-center">
+                <p class="font-semibold">Páginas Lidas</p>
+                <div class="flex-1 flex items-center">
+                    <p class="mobile:text-xs laptop:text-xl text-orange-400 ">{{pagesCount | numberDotsPipe}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-stone-800 flex flex-1 h-[100px] rounded-lg shadow-lg items-center justify-center laptop:order-5 mobile:order-6 mobile:text-xs laptop:text-base"
+            matTooltip="Média de Páginas lidas por mês">
+            <div class="w-20 h-full flex items-center justify-center text-orange-400">
+                <i data-feather="bar-chart-2" class="w-10 h-10"></i>
+            </div>
+            <div class="flex-1 flex flex-col p-4 justify-center">
+                <p class="font-semibold">Média de Páginas Mês</p>
+                <div class="flex-1 flex items-center">
+                    <p class="mobile:text-xs laptop:text-xl text-orange-400">{{avgPagesMonth | numberDotsPipe}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-stone-800 flex flex-1 h-[100px] rounded-lg shadow-lg items-center justify-center laptop:order-6 mobile:order-7 mobile:text-xs laptop:text-base"
+            matTooltip="Média de Livros lidos por mês">
+            <div class="w-20 h-full flex items-center justify-center text-orange-400">
+                <i data-feather="bar-chart" class="w-10 h-10"></i>
+            </div>
+            <div class="flex-1 flex flex-col p-4 justify-center">
+                <p class="font-semibold">Média de Livros Mês</p>
+                <div class="flex-1 flex items-center">
+                    <p class="mobile:text-xs laptop:text-xl text-orange-400 ">{{avgBooksMonth}}</p>
+                </div>
+            </div>
+        </div>
+        <div
+            class="bg-stone-800 flex flex-1 h-[100px] rounded-lg shadow-lg p-4 max-w-lg w-full items-center laptop:order-7 mobile:order-1 laptop:col-span-1 mobile:col-span-2 ">
+            <div class="w-20 h-full flex items-center justify-center text-orange-400">
+                <i data-feather="calendar" class="w-10 h-10"></i>
+            </div>
+
+            <mat-form-field>
+                <mat-label>Ano Base</mat-label>
+                <mat-select [value]="selectedYear" (selectionChange)="onYearSelected($event.value)">
+                    <mat-option *ngFor="let year of uniqueYears" [value]="year">{{year}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="flex-1 justify-between">
+        <div class="grid-stack">
+            <div class="grid-stack-item" gs-x="0" gs-y="0" gs-w="4" gs-h="5">
+                <div class="grid-stack-item-content">
+                    <canvas id="booksAuthor"></canvas>
+                </div>
+            </div>
+            <div class="grid-stack-item" gs-x="4" gs-y="0" gs-w="4" gs-h="5">
+                <div class="grid-stack-item-content">
+                    <canvas id="booksMonth"></canvas>
+                </div>
+            </div>
+            <div class="grid-stack-item" gs-x="8" gs-y="0" gs-w="4" gs-h="5">
+                <div class="grid-stack-item-content">
+                    <canvas id="ratingAuthor"></canvas>
+                </div>
+            </div>
+            <div class="grid-stack-item" gs-x="0" gs-y="0" gs-w="4" gs-h="5">
+                <div class="grid-stack-item-content">
+                    <canvas id="pagesMonth"></canvas>
+                </div>
+            </div>
+            <div class="grid-stack-item" gs-x="4" gs-y="0" gs-w="2" gs-h="5">
+                <div class="grid-stack-item-content">
+                    <canvas id="rating"></canvas>
+                </div>
+            </div>
+            <div class="grid-stack-item" gs-x="6" gs-y="0" gs-w="2" gs-h="5">
+                <div class="grid-stack-item-content">
+                    <canvas id="readingsByGenre"></canvas>
+                </div>
+            </div>
+            <div class="grid-stack-item" gs-x="10" gs-y="0" gs-w="4" gs-h="5">
+                <div class="grid-stack-item-content">
+                    <canvas id="ratingGenre"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

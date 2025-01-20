@@ -1,0 +1,21 @@
+:host ::ng-deep {
+    .mat-mdc-form-field-subscript-wrapper {
+        display: none !important;
+    }
+}
+
+.grid-stack {
+    .grid-stack-item {
+        .grid-stack-item-content {
+            text-align: center;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            background-color: #292524;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+        }
+    }
+}
+

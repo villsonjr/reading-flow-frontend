@@ -1,0 +1,79 @@
+<div class="p-4 space-y-4">
+    <h2 mat-dialog-title>{{ action }} Livro</h2>
+    <mat-dialog-content>
+        <div class="flex flex-col">
+            <mat-form-field>
+                <mat-label>Título</mat-label>
+                <input matInput [formControl]="titleControl">
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Autor</mat-label>
+                <input matInput [formControl]="authorControl">
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Páginas</mat-label>
+                <input matInput [formControl]="pageControl">
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Gênero</mat-label>
+                <input matInput #genreInput [formControl]="genreControl" [matAutocomplete]="genres">
+                <mat-autocomplete #genres="matAutocomplete" (optionSelected)="onGenreSelected($event.option.viewValue)">
+                    <mat-option *ngFor="let genreName of filteredTitleOptions | async" [value]="genreName">
+                        {{ genreName }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <table mat-table [dataSource]="dataSourceCategories" class="mat-elevation-z8 mb-6 w-full">
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Categorias</th>
+                    <td mat-cell *matCellDef="let category"> {{category.name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef class="!text-right">
+                        <ng-container *ngIf="isMod">
+                            <button mat-icon-button color="primary" (click)="adicionarCategoria()">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                        </ng-container>
+                    </th>
+                    <td mat-cell *matCellDef="let category" class="!text-right">
+                        <ng-container *ngIf="isMod">
+                            <button mat-icon-button color="primary" (click)="removerCategoria(category)">
+                                <mat-icon fontIcon="close"></mat-icon>
+                            </button>
+                        </ng-container>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsCategories"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsCategories;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="h-14 text-center" colspan="100%">
+                        {{ 'Nenhum registro encontrado' }}
+                    </td>
+                </tr>
+            </table>
+
+            <mat-form-field>
+                <mat-label>Descrição</mat-label>
+                <textarea matInput [formControl]="descriptionControl"></textarea>
+            </mat-form-field>
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-dialog-close mat-raised-button color="warn">Fechar</button>
+        <button mat-dialog-close mat-raised-button color="primary" *ngIf="action === 'Remover'"
+            (click)="remove()">Excluir</button>
+        <ng-container *ngIf="isMod">
+            <button mat-dialog-close mat-raised-button color="primary" *ngIf="action !== 'Remover'"
+                (click)="save()">Salvar</button>
+        </ng-container>
+    </mat-dialog-actions>
+</div>

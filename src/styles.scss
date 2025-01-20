@@ -1,0 +1,109 @@
+@use '@angular/material' as mat;
+@import '@angular/material/theming';
+@include mat.core();
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+$ulk-theme: (
+    50: #fff7ed,
+    100: #ffedd5,
+    200: #fed7aa,
+    300: #fdba74,
+    400: #fb923c,
+    500: #f97316,
+    600: #ea580c,
+    700: #c2410c,
+    800: #9a3412,
+    900: #7c2d12,
+    950: #431407,
+
+    A100: #FFAA83,
+    A200: #FF8F62,
+    A400: #EB5630,
+    A700: #C41200,
+
+    contrast: (50: $dark-primary-text,
+        100: $dark-primary-text,
+        200: $dark-primary-text,
+        300: $light-primary-text,
+        400: $light-primary-text,
+        500: $light-primary-text,
+        600: $light-primary-text,
+        700: $light-primary-text,
+        800: $light-primary-text,
+        900: $light-primary-text,
+        A100: $dark-primary-text,
+        A200: $light-primary-text,
+        A400: $light-primary-text,
+        A700: $light-primary-text,
+    )
+);
+
+$default-typography: mat.define-typography-config();
+$custom-typography: mat.define-typography-config($font-family: 'Comic Sans');
+$ulk-custom-typography: mat.define-typography-config($font-family: 'Segoe UI');
+
+.orangeTheme {
+
+    $primary: mat-color(mat-palette($ulk-theme));
+    $primary-color: mat-color(mat-palette($ulk-theme, 400));
+
+    $orange-primary: mat.define-palette(mat-palette($ulk-theme));
+    // $orange-accent: mat.define-palette(mat.$deep-purple-palette);
+    $orange-accent: mat.define-palette(mat-palette($ulk-theme));
+    $orange-warn: mat.define-palette(mat.$red-palette);
+
+    $ulk-theme: mat.define-dark-theme((color:(primary:$orange-primary,
+                    accent:$orange-accent,
+                    warn:$orange-warn ),
+                typography: $ulk-custom-typography,
+            ));
+
+    $cardbackground-primary: mat.get-color-from-palette($orange-primary, 800);
+    $card-primary-text: mat.get-color-from-palette($orange-primary, 100);
+
+    @include mat.all-component-themes($ulk-theme);
+    @import 'ulkCustomTheme';
+}
+
+html,
+body {
+    height: 100dvh;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.mat-mdc-snack-bar-container {
+
+    margin-top: 24px !important;
+    margin-right: 24px !important;
+
+    &.simple-snackbar {
+        --mdc-snackbar-container-color: rgba(244, 153, 36, 0.5);
+        --mat-mdc-snack-bar-button-color: #fff;
+        --mdc-snackbar-supporting-text-color: #fff;
+    }
+
+    &.success-snackbar {
+        --mdc-snackbar-container-color: rgb(0, 255, 0, 0.5);
+        --mat-mdc-snack-bar-button-color: #fff;
+        --mdc-snackbar-supporting-text-color: #fff;
+    }
+
+    &.warn-snackbar {
+        --mdc-snackbar-container-color: rgb( 255, 0, 232 , 0.5);
+        --mat-mdc-snack-bar-button-color: #fff;
+        --mdc-snackbar-supporting-text-color: #fff;
+    }
+
+    &.error-snackbar {
+        --mdc-snackbar-container-color: rgb(255, 0, 0, 0.5);
+        --mat-mdc-snack-bar-button-color: #fff;
+        --mdc-snackbar-supporting-text-color: #fff;
+    }
+}

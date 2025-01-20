@@ -1,0 +1,49 @@
+.nav-item {
+    position: relative;
+    cursor: pointer;
+
+    &:hover svg,
+    &:hover span,
+    &:hover img,
+    &.active-link {
+        transition: all 1s ease;
+        color: rgb(251, 146, 60);
+    }
+
+    &:hover .overlay {
+        opacity: .8;
+    }
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(251, 146, 60, 0.7);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.input-search:hover::placeholder {
+    transition: all 1s ease;
+    color: rgb(251, 146, 60);
+}
+
+.btn-search:hover {
+    background-color: rgb(251, 146, 60);
+    color: white;
+    transition: all 1s ease;
+}
+
+.nav-subitem {
+    
+    transition: all .8s ease;
+
+    &:hover span,
+    &:hover mat-icon {
+        color: #f49924;
+    }
+}

@@ -1,0 +1,27 @@
+<div class="p-4">
+    <mat-dialog-content>
+
+
+        <mat-form-field class="w-full" *ngIf="!genre">
+            <mat-label>Categoria</mat-label>
+            <input matInput #nameCategory [formControl]="nameControl" placeholder="Digite o nome da categoria">
+        </mat-form-field>
+
+        <mat-form-field class="w-full" *ngIf="genre">
+            <mat-label>Categoria</mat-label>
+            <mat-select #nameCategories [formControl]="categoriesControl">
+              <mat-option *ngFor="let category of categories" [value]="category">
+                {{ category }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        <mat-dialog-actions align="end">
+            <button mat-dialog-close mat-raised-button color="warn">Cancelar</button>
+            <button mat-button mat-raised-button color="primary" *ngIf="!genre" (click)="salvar()">Adicionar</button>
+            <button mat-button mat-raised-button color="primary" *ngIf="genre" (click)="vincular()">Vincular</button>
+
+        </mat-dialog-actions>
+
+    </mat-dialog-content>
+</div>

@@ -1,0 +1,72 @@
+<nav class="flex flex-col justify-between h-full">
+    <ul class="space-y-6">
+        <li class="flex justify-center border-b pb-4 border-zinc-200 cursor-pointer" id="toggle-sidebar">
+            <img src="/assets/images/ulk-white.png" id="sidebar-image" class="size-6">
+            <i data-feather="menu" class="hidden"></i>
+        </li>
+        <li class="nav-item" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+            <a routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+                class="flex items-center gap-3">
+                <mat-icon fontIcon="dashboard"></mat-icon><span class="menu-text hidden"> Dashboard </span>
+            </a>
+        </li>
+
+        <mat-nav-list class="nav-item subMenus" routerLinkActive="active-link" (click)="expandBooks()">
+            <mat-expansion-panel [(expanded)]="isPanelBooksExpanded">
+                <mat-expansion-panel-header>
+                    <i data-feather="book"></i> <span class="menu-text hidden">Livros</span>
+                </mat-expansion-panel-header>
+                <mat-nav-list>
+                    <a mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+                        routerLink="/dashboard/books/reading">
+                        <mat-icon fontIcon="auto_stories"></mat-icon><span>Minhas Leituras</span>
+                    </a>
+                    <a mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+                        routerLink="/dashboard/books/library">
+                        <mat-icon fontIcon="menu_book"></mat-icon><span>Biblioteca</span>
+                    </a>
+                    <a mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+                        routerLink="/dashboard/books/categories">
+                        <mat-icon fontIcon="bookmarks"></mat-icon><span>Gêneros</span>
+                    </a>
+                </mat-nav-list>
+            </mat-expansion-panel>
+        </mat-nav-list>
+
+        <ng-container *ngIf="isAdmin">
+            <mat-nav-list class="nav-item subMenus" routerLinkActive="active-link" (click)="expandRestricted()">
+                <mat-expansion-panel [(expanded)]="isPanelRestrictedExpanded">
+                    <mat-expansion-panel-header>
+                        <mat-icon fontIcon="coffee"></mat-icon><span class="menu-text hidden"> Restrito</span>
+                    </mat-expansion-panel-header>
+                    <mat-nav-list>
+
+                        <a mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+                            routerLink="/dashboard/restricted/users">
+                            <mat-icon fontIcon="group"></mat-icon><span>Usuários</span>
+                        </a>
+
+                        <a mat-list-item routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+                            routerLink="/dashboard/restricted/requests">
+                            <mat-icon fontIcon="checklist"></mat-icon><span>Solicitações</span>
+                            <!-- <mat-icon fontSet="fas" fontIcon="fa-list-check" class="text-2xl"></mat-icon><span>Solicitações</span> -->
+                        </a>
+
+                    </mat-nav-list>
+                </mat-expansion-panel>
+            </mat-nav-list>
+        </ng-container>
+    </ul>
+
+    <ul class="space-y-6 pt-4 border-t border-zinc-200 mb-4">
+        <li class="nav-item" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+            <a routerLink="/dashboard/settings" routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: true }" class="flex items-center gap-3">
+                <mat-icon fontIcon="settings"></mat-icon><span class="menu-text hidden">Configurações</span>
+            </a>
+        </li>
+        <li class="flex items-center gap-3 nav-item" (click)="logout()">
+            <mat-icon fontIcon="logout"></mat-icon><span class="menu-text hidden">Logout</span>
+        </li>
+    </ul>
+</nav>

@@ -1,0 +1,100 @@
+.nav-item {
+    position: relative;
+    cursor: pointer;
+
+    &::before,
+    &.active-link::before {
+        content: '';
+        border-radius: 2px;
+        position: absolute;
+        left: -14px;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background-color: transparent;
+        transition: all 0.8s ease;
+    }
+
+    &:hover::before,
+    &.active-link::before {
+        background-color: #f49924;
+    }
+
+    &:hover {
+        color: #f49924;
+    }
+
+    &.active-link {
+        a.active-link * {
+            color: #f49924;
+        }
+    }
+}
+
+:host ::ng-deep {
+
+    .mat-mdc-list-base {
+        --mdc-list-list-item-label-text-size: 14px;
+        --mdc-list-list-item-label-text-tracking: 0.01em;
+        --mdc-list-list-item-focus-state-layer-color: none;
+        --mdc-list-list-item-focus-state-layer-opacity: 1;
+    }
+
+    .mdc-list-item__primary-text {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    mat-mdc-list-item .mdc-list {
+        padding: 0;
+    }
+
+    .mat-expansion-panel {
+        background-color: transparent;
+        box-shadow: none !important;
+
+        .mat-expansion-panel-body {
+            padding-bottom: 0;
+        }
+    }
+
+    .mat-content {
+        gap: 0.75rem;
+        overflow: unset;
+    }
+
+    .mat-expansion-panel-header.mat-expanded {
+        height: 24px !important;
+    }
+
+    .mat-expansion-panel-header {
+        padding: 0;
+        padding-right: 12px;
+        align-items: normal;
+        height: auto;
+
+        transition: none !important;
+
+        &:hover {
+            background-color: transparent !important;
+            color: #f49924;
+
+            span::before,
+            span::after {
+                border-color: #f49924;
+            }
+        }
+    }
+}
+
+.subMenus {
+    padding: 0;
+
+    a:hover,
+    a:hover mat-icon {
+        span,
+        mat-icon {
+            color: #f49924;
+        }
+    }
+}

@@ -1,0 +1,154 @@
+<div class="p-4">
+    <mat-tab-group #tabRequest>
+        <mat-tab label="Solicitação">
+
+            <div class="flex py-4">
+                <div class="border-2 rounded-md p-2 m-auto mr-8 w-36 text-center" [ngClass]="{
+                    'border-orange-400': request.status === 'CREATED',
+                    'border-yellow-400': request.status === 'IN_PROGRESS',
+                    'border-red-400': request.status === 'CANCELED',
+                    'border-green-400': request.status === 'COMPLETE' }">
+                    <p [ngClass]="{
+                        'text-orange-400': request.status === 'CREATED',
+                        'text-yellow-400': request.status === 'IN_PROGRESS',
+                        'text-red-400': request.status === 'CANCELED',
+                        'text-green-400': request.status === 'COMPLETE' }">{{ request.getStatus() }}</p>
+                </div>
+            </div>
+            <h1 class="p-8 text-end">Criada por {{ request.owner.name }} em {{ request.requestedDate | date: 'dd/MM/yyyy' }}
+            </h1>
+
+            <mat-dialog-content>
+                <div class="flex flex-col">
+                    <mat-form-field>
+                        <mat-label>Título</mat-label>
+                        <input matInput [formControl]="titleControl">
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Autor</mat-label>
+                        <input matInput [formControl]="authorControl">
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Responsável</mat-label>
+                        <input matInput [formControl]="assignedUser">
+                    </mat-form-field>
+
+                    <mat-checkbox [(ngModel)]="sendMail"
+                        [disabled]="request.assigned?.name == null || request.status === 'COMPLETE'"
+                        class="!flex !justify-end mb-4">
+                        Encaminhar Email
+                    </mat-checkbox>
+
+                    <div
+                        class='border-2 rounded-md p-4 border-white/10 text-center items-center flex flex-col space-y-4'>
+                        <mat-icon fontSet="fas" fontIcon="fa-file-arrow-up" class="text-3xl !size-auto"></mat-icon>
+                        <p>Anexar arquivo ".epub"</p>
+                        <button mat-raised-button color="primary"
+                            [disabled]="request.assigned?.name == null || request.status === 'COMPLETE'">
+                            <mat-icon>cloud_upload</mat-icon>
+                            <span>Upload EPUB</span>
+                            <input type="file" accept=".epub" (change)="onFileSelected($event)"
+                                style="opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer;">
+                        </button>
+                        <div *ngIf="selectedFileName" class="flex flex-col text-xs">
+                            <p [ngClass]="{'text-red-500': selectedFileName[0] === 'NOMENCLATURA INVÁLIDA'}">{{
+                                selectedFileName[0] }}</p>
+                            <p>{{ selectedFileName[1] }}</p>
+                        </div>
+                    </div>
+
+
+                </div>
+            </mat-dialog-content>
+        </mat-tab>
+
+        <mat-tab label="Livro" [disabled]="bookInformations">
+            <mat-dialog-content>
+                <div class="flex flex-col p-4">
+                    <mat-form-field>
+                        <mat-label>Título</mat-label>
+                        <input matInput [formControl]="bookTitleControl">
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Autor</mat-label>
+                        <input matInput [formControl]="bookAuthorControl">
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>ISBN</mat-label>
+                        <input matInput type="text" [(ngModel)]="isbnFilter" [formControl]="isbnControl"
+                            (keyup)="keyup($event)" #fil>
+                        <mat-icon matSuffix (click)="searchISBN()" class="text-white">
+                            {{ hasText ? 'search' : '' }}
+                        </mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Páginas</mat-label>
+                        <input matInput [formControl]="bookPageControl">
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Gênero</mat-label>
+                        <input matInput #genreInput [formControl]="genreControl" [matAutocomplete]="genres">
+                        <mat-autocomplete #genres="matAutocomplete"
+                            (optionSelected)="onGenreSelected($event.option.viewValue)">
+                            <mat-option *ngFor="let genreName of filteredTitleOptions | async" [value]="genreName">
+                                {{ genreName }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+
+                    <table mat-table [dataSource]="dataSourceCategories" class="mat-elevation-z8 mb-6 w-full">
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef>Categorias</th>
+                            <td mat-cell *matCellDef="let category"> {{category.name}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef class="!text-right">
+                                <ng-container *ngIf="request.status !== 'COMPLETE'">
+                                    <button mat-icon-button color="primary" (click)="adicionarCategoria()">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                </ng-container>
+                            </th>
+                            <td mat-cell *matCellDef="let category" class="!text-right">
+                                <ng-container *ngIf="request.status !== 'COMPLETE'">
+                                    <button mat-icon-button color="primary" (click)="removerCategoria(category)">
+                                        <mat-icon fontIcon="close"></mat-icon>
+                                    </button>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsCategories"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsCategories;"></tr>
+
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="h-14 text-center" colspan="100%">
+                                {{ 'Nenhum registro encontrado' }}
+                            </td>
+                        </tr>
+                    </table>
+
+                    <mat-form-field>
+                        <mat-label>Descrição</mat-label>
+                        <textarea matInput [formControl]="descriptionControl"></textarea>
+                    </mat-form-field>
+                </div>
+            </mat-dialog-content>
+        </mat-tab>
+    </mat-tab-group>
+
+    <mat-dialog-actions align="end">
+        <button mat-dialog-close mat-raised-button color="warn">Fechar</button>
+        <button mat-button mat-raised-button color="primary" (click)="saveAndSend()"
+            *ngIf="request.status === 'IN_PROGRESS' && action != 'delete'">Salvar</button>
+        <button mat-button mat-raised-button color="primary"  (click)="removeRequest(request)"
+            *ngIf="action === 'delete'">Remover</button>
+    </mat-dialog-actions>
+</div>

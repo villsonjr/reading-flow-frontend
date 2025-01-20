@@ -1,0 +1,55 @@
+<div class="flex items-center mobile:justify-end tablet:justify-between px-4 py-1">
+
+
+    <div class="mobile:hidden tablet:flex flex-col ">
+        <ng-container *ngIf="showClock">
+            <div class="text-orange-400">
+                <p>{{ getDate() | date: 'dd/MM/yyyy - HH:mm:ss' }}</p>
+            </div>
+            <div class="flex justify-center">
+                <p class="text-xs text-stone-500">{{ getDay() }}</p>
+            </div>
+        </ng-container>
+    </div>
+
+
+    <nav>
+        <ul class="flex space-x-4">
+            <li class="nav-item hover:text-orange-400" routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: true }" matTooltip="Dashboard">
+                <a routerLink="/dashboard" class="nav-link">
+                    <mat-icon fontIcon="dashboard"></mat-icon>
+                </a>
+            </li>
+
+            <li class="nav-item hover:text-orange-400" routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: true }" matTooltip="Configurações">
+                <a routerLink="/dashboard/settings" class="nav-link">
+                    <mat-icon fontIcon="settings"></mat-icon>
+                </a>
+            </li>
+
+            <li class="nav-item relative" [matMenuTriggerFor]="beforeMenu">
+                <img [src]="profileImageUrl" class="w-8 h-8 rounded-full object-cover">
+                <div class="overlay"></div>
+            </li>
+
+            <mat-menu #beforeMenu="matMenu" xPosition="before" class="mt-4 dropMenuImage">
+                <button class="nav-subitem" mat-menu-item routerLinkActive="active-link"
+                    [routerLinkActiveOptions]="{ exact: true }" routerLink="/dashboard/books/reading">
+                    <mat-icon fontIcon="auto_stories"></mat-icon><span>Minha Leitura</span>
+                </button>
+                <button class="nav-subitem" mat-menu-item routerLinkActive="active-link"
+                    [routerLinkActiveOptions]="{ exact: true }" routerLink="/dashboard/books/library">
+                    <mat-icon fontIcon="menu_book"></mat-icon><span>Biblioteca</span>
+                </button>
+
+                <mat-divider></mat-divider>
+
+                <button class="nav-subitem" mat-menu-item (click)="logout()">
+                    <mat-icon fontIcon="logout"></mat-icon><span>Logout</span>
+                </button>
+            </mat-menu>
+        </ul>
+    </nav>
+</div>

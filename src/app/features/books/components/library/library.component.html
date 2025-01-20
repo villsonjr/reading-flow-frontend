@@ -1,0 +1,228 @@
+<div class="mobile:min-w-max tablet:min-w-max laptop:min-w-0">
+    <div class="items-center min-w-full p-4 mx-auto bg-stone-800 rounded-lg shadow-md mb-4">
+        <div class="mx-auto">
+            <div class="flex justify-between w-full items-center">
+                <h1 class="font-semibold text-xl">Biblioteca Virtual</h1>
+
+                <mat-form-field appearance="fill" class="w-5/12 custom-mat-form-field">
+                    <mat-label>Filtro</mat-label>
+                    <input matInput type="text" matTooltip="Filtrar Livros por palavras chave" [(ngModel)]="filter"
+                        #ctrl="ngModel" (keyup)="applyFilter($event)" #fil placeholder="Ex. J. K. Rowling"
+                        class="custom-input">
+                    <mat-icon matSuffix (click)="clearFilterBook()" class="text-white">
+                        {{ hasText ? 'close' : '' }}
+                    </mat-icon>
+                </mat-form-field>
+
+                <div class="flex space-x-4">
+                    <ng-container *ngIf="isAdmin">
+                        <button matTooltip="Enviar Livro" (click)="newBook()"
+                            class="px-6 py-4 text-orange-400 bg-stone-900/90 rounded-md btn-books text-2xl">
+                            <mat-icon class="text-xl content-center" fontSet="fas" fontIcon="fa-cloud-arrow-up"></mat-icon>
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="isAdmin">
+                        <button matTooltip="Verificar arquivos Google Drive"
+                            class="px-6 py-4 text-orange-400 bg-stone-900/90 rounded-md btn-books text-2xl">
+                            <mat-icon fontSet="fab" fontIcon="fa-google-drive"></mat-icon>
+                        </button>
+                    </ng-container>
+                    <button (click)="openRequestedModal(null, 'Solicitar')" matTooltip="Criar solicitação de Livro"
+                        class="flex px-6 py-4 gap-3 text-orange-400 bg-stone-900/90 rounded-md btn-books">
+                        <mat-icon fontIcon="add"></mat-icon>Solicitar Livro
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col mt-2">
+                <div class="table-shadow">
+                    <table mat-table [dataSource]="dataSourceBooks" matSort class="striped-table">
+                        <ng-container matColumnDef="title">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="!font-bold"> Título </th>
+                            <td mat-cell *matCellDef="let book" class="even-row odd-row"> {{ book.title }} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="authors">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="!font-bold"> Autor </th>
+                            <td mat-cell *matCellDef="let book" class="even-row odd-row"> {{ book.getAuthorsName() ||
+                                'N/A'
+                                }} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="genre">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                class="centered-sorted-header !font-bold">
+                                Gênero </th>
+                            <td mat-cell *matCellDef="let book" class="even-row odd-row" class="txt-center"> {{
+                                book.getGenreName() || 'N/A' }} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="categories">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                class="centered-sorted-header !font-bold">
+                                Categorias </th>
+                            <td mat-cell *matCellDef="let book" class="even-row odd-row" class="txt-center"> {{
+                                book.getCategoriesName() || 'N/A' }} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="pages">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                class="centered-sorted-header !font-bold">
+                                Páginas </th>
+                            <td mat-cell *matCellDef="let book" class="even-row odd-row" class="txt-center"> {{
+                                book.pages
+                                || 'N/A' }} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="description">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="!font-bold"> Descrição </th>
+                            <td mat-cell *matCellDef="let book" matTooltip="Descrição completa"
+                                class="even-row odd-row cursor-pointer descriptionText"
+                                (click)="openDescriptionModal(book.title, book.description)"> {{ book.description ||
+                                'N/A'
+                                }}
+                            </td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="actions">
+
+                            <th mat-header-cell *matHeaderCellDef disableSort
+                                class="centered-sorted-header header-acttion cursor-pointer !font-bold"> Ações </th>
+
+                            <td mat-cell *matCellDef="let book" class="even-row odd-row !text-center">
+                                <ng-container *ngIf="isMod">
+                                    <button mat-icon-button color="primary" (click)="openBookModal(book, 'Editar')"
+                                        matTooltip="Editar Livro">
+                                        <mat-icon class="editIcon">edit</mat-icon>
+                                    </button>
+                                    <button mat-icon-button (click)="openBookModal(book, 'Remover')"
+                                        matTooltip="Remover Livro">
+                                        <mat-icon class="text-red-600 deleteIcon">delete</mat-icon>
+                                    </button>
+                                </ng-container>
+                                <ng-container *ngIf="isUser">
+                                    <button mat-icon-button color="primary" (click)="openBookModal(book, 'Visualizar')"
+                                        matTooltip="Visualizar Livro">
+                                        <mat-icon class="editIcon">visibility</mat-icon>
+                                    </button>
+                                </ng-container>
+                            </td>
+
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsBook" class="bg-darkTheme"></tr>
+                        <tr mat-row *matRowDef="let book; columns: displayedColumnsBook;"></tr>
+
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="h-14 text-center" colspan="100%">
+                                {{ hasText ?
+                                'Nenhum registro encontrado para o filtro: '.concat(fil.value) :
+                                'Nenhum registro encontrado' }}
+                            </td>
+                        </tr>
+                    </table>
+                    <mat-paginator id="paginatorBooks" #paginatorBooks [pageSizeOptions]="[5, 3, 10]"></mat-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex space-x-4">
+        <div class="w-3/4 p-4 mx-auto bg-stone-800 rounded-lg shadow-md space-y-4">
+            <h1 class="font-semibold text-xl">Últimos Livros Solicitados</h1>
+            <div class="table-shadow">
+                <table mat-table [dataSource]="dataSourceRequestedBooks" class="striped-table">
+
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef
+                            class="centered-sorted-header header-acttion cursor-pointer !font-bold"> Data </th>
+                        <td mat-cell *matCellDef="let request" class="txt-center">
+                            {{ request.requestedDate | date: 'dd/MM/yyyy' }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="title">
+                        <th mat-header-cell *matHeaderCellDef
+                            class="centered-sorted-header header-acttion cursor-pointer !font-bold"> Título </th>
+                        <td mat-cell *matCellDef="let request"> {{ request.bookTitle }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="author">
+                        <th mat-header-cell *matHeaderCellDef
+                            class="centered-sorted-header header-acttion cursor-pointer !font-bold"> Autor </th>
+                        <td mat-cell *matCellDef="let request"> {{ request.authorName }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef
+                            class="centered-sorted-header header-acttion cursor-pointer !font-bold"> Status </th>
+                        <td mat-cell *matCellDef="let request" [ngClass]="{
+                        'text-blue-400': request.status === 'CREATED',
+                        'text-yellow-400': request.status === 'IN_PROGRESS',
+                        'text-red-400': request.status === 'CANCELED',
+                        'text-ulk-green': request.status === 'COMPLETE' }">
+                            <div class="border-2 rounded-md p-2 m-auto w-36 text-center" [ngClass]="{
+                            'border-blue-400': request.status === 'CREATED',
+                            'border-yellow-400': request.status === 'IN_PROGRESS',
+                            'border-red-400': request.status === 'CANCELED',
+                            'border-ulk-green': request.status === 'COMPLETE' }">
+                                {{ request.getStatus() }}
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef disableSort
+                            class="centered-sorted-header header-acttion cursor-pointer !font-bold"> Ações </th>
+                        <td mat-cell *matCellDef="let request" class="even-row odd-row" class="txt-center">
+                            <button mat-icon-button color="primary" (click)="openRequestedModal(request, 'Editar')"
+                                matTooltip="Editar Solicitação"
+                                [disabled]="request.status === 'IN_PROGRESS' || request.status === 'CANCELED' || request.status === 'COMPLETE'">
+                                <mat-icon class="editIcon">edit</mat-icon>
+                            </button>
+                            <button mat-icon-button (click)="openRequestedModal(request, (request.status === 'CREATED' || request.status
+                                === 'IN_PROGRESS') ? 'Cancelar' : 'Remover')"
+                                [matTooltip]="(request.status === 'CREATED' || request.status === 'IN_PROGRESS') ? 'Cancelar Solicitação' : 'Remover Solicitação'">
+                                <mat-icon class="text-red-600 deleteIcon">
+                                    {{ (request.status === 'CREATED' || request.status === 'IN_PROGRESS') ?
+                                    'close' :
+                                    'delete' }}
+                                </mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsRequestedBooks" class="bg-darkTheme"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsRequestedBooks;"></tr>
+
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="h-14 text-center" colspan="100%"> Nenhum registro encontrado </td>
+                    </tr>
+                </table>
+                <mat-paginator #paginatorRequests [pageSizeOptions]="[2, 5]"></mat-paginator>
+            </div>
+        </div>
+
+        <div class="flex-1 mobile:min-w-1/4 p-4 mx-auto bg-stone-800 rounded-lg shadow-md space-y-4">
+            <h1 class="font-semibold text-xl">Top 3 Autores</h1>
+            <div class="table-shadow">
+                <table mat-table [dataSource]="dataSourceTop5Authors" class="striped-table">
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef
+                            class="centered-sorted-header header-acttion cursor-pointer !font-bold">Autor</th>
+                        <td mat-cell *matCellDef="let author"> {{ author.name }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="bookCount">
+                        <th mat-header-cell *matHeaderCellDef
+                            class="centered-sorted-header header-acttion cursor-pointer !font-bold">Livros Disponíveis
+                        </th>
+                        <td mat-cell *matCellDef="let author" class="txt-center"> {{ author.bookCount }} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsTop5Authors" class="bg-darkTheme"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsTop5Authors;"></tr>
+
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="h-14 text-center" colspan="100%"> Nenhum registro encontrado </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

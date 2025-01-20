@@ -1,0 +1,113 @@
+<div class="h-full flex flex-col bg-login overflow-x-auto bg-cover bg-center">
+
+    <div class="flex flex-col flex-1 text-end p-4">
+
+        <div class="mt-4 mr-2 space-x-8 select-none font-bold uppercase">
+            <span>Entrar</span>
+            <span>Registrar</span>
+        </div>
+
+        <input class="checkbox" type="checkbox" id="reg-log" name="reg-log">
+        <label for="reg-log"></label>
+
+        <div class="card-3d-wrap mx-auto">
+            <div class="card-3d-wrapper">
+                <div class="card-front">
+                    <div class="center-wrap">
+                        <div class="w-full flex justify-center p-4">
+                            <img src="/assets/images/ulk-white.png" class="h-32 relative left-12" id="ulk-image">
+                            <div class="text-flow">
+                                Reading Flow
+                            </div>
+                        </div>
+
+                        <div class="flex-1 space-y-4">
+                            <form class="flex flex-col py-4">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Usuário</mat-label>
+                                    <input matInput name="username" [formControl]="username">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Senha</mat-label>
+                                    <input matInput [type]="showPassword ? 'text' : 'password'" name="password"
+                                        [formControl]="password">
+                                    <mat-icon matSuffix (click)="togglePasswordVisibility()" class="text-white iconEye">
+                                        {{showPassword?'visibility_off':'visibility'}}
+                                    </mat-icon>
+                                </mat-form-field>
+                                <div class="flex justify-center">
+                                    <mat-checkbox class="select-none" [checked]="credentials">Lembrar
+                                        Credenciais</mat-checkbox>
+                                </div>
+                                <button mat-raised-button type="submit" (click)="login()" color="primary"
+                                    class="mt-4 !h-14">Entrar</button>
+                            </form>
+
+                            <p class="text-stone-700 hover:text-stone-600 select-none cursor-default text-center">
+                                Esqueci minha senha</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-back">
+                    <div class="center-wrap">
+                        <div class="flex-1">
+                            <form class="flex flex-col py-4">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Nome</mat-label>
+                                    <input matInput name="username" [formControl]="username">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Email</mat-label>
+                                    <input matInput name="username" [formControl]="username">
+                                </mat-form-field>
+
+                                <div class="flex space-x-4">
+                                    <mat-form-field class="flex-grow" appearance="fill">
+                                        <mat-label>Usuário</mat-label>
+                                        <input matInput name="username" [formControl]="username">
+                                    </mat-form-field>
+
+                                    <mat-form-field class="w-2/5">
+                                        <mat-label>Aniversário</mat-label>
+                                        <input matInput [matDatepicker]="picker" [formControl]="dateControl">
+                                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Senha</mat-label>
+                                    <input matInput [type]="showPassword ? 'text' : 'password'" name="password"
+                                        [formControl]="password">
+                                    <mat-icon matSuffix (click)="togglePasswordVisibility()" class="text-white iconEye">
+                                        {{showPassword?'visibility_off':'visibility'}}
+                                    </mat-icon>
+                                </mat-form-field>
+
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Confirme sua senha</mat-label>
+                                    <input matInput [type]="showPassword ? 'text' : 'password'" name="password"
+                                        [formControl]="password">
+                                    <mat-icon matSuffix (click)="togglePasswordVisibility()" class="text-white iconEye">
+                                        {{showPassword?'visibility_off':'visibility'}}
+                                    </mat-icon>
+                                </mat-form-field>
+
+                                <button mat-raised-button type="submit" (click)="register()" color="primary"
+                                    class="mt-4 !h-14">Registrar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full flex justify-center p-4">
+        <p class="text-stone-700 hover:text-stone-600 text-[10px] select-none cursor-default">
+            Copyright &copy; 2024. Developed by <a>ulk</a> &hearts;</p>
+    </div>
+
+</div>

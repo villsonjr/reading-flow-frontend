@@ -1,0 +1,128 @@
+<app-progress-bar [progress]="downloadProgress"></app-progress-bar>
+<div class="mobile:min-w-max tablet:min-w-max laptop:min-w-0">
+    <div class="items-center w-full p-4 bg-stone-800 rounded-lg shadow-md mb-4">
+
+        <div class="flex justify-between w-full items-center">
+            <h1 class="font-semibold text-xl">Leituras Registradas</h1>
+
+            <mat-form-field appearance="fill" class="w-5/12 custom-mat-form-field">
+                <mat-label>Filtro</mat-label>
+                <input matInput type="text" matTooltip="Filtrar Leituras por palavras chave" [(ngModel)]="filter"
+                    #ctrl="ngModel" (keyup)="applyFilter($event)" #fil placeholder="Ex. Colleen Hoover"
+                    class="custom-input">
+                <mat-icon matSuffix (click)="clearFilterReading()" class="text-white">
+                    {{ hasText ? 'close' : '' }}
+                </mat-icon>
+            </mat-form-field>
+
+            <div class="flex space-x-4">
+                <button matTooltip="Gerar relatório em formato PDF" (click)="readingsReport()"
+                    class="px-6 py-4 text-orange-400 bg-stone-900/90 rounded-md btn-books text-2xl">
+                    <mat-icon fontSet="fas" fontIcon="fa-file-pdf"></mat-icon>
+                </button>
+                <button matTooltip="Registrar uma nova Leitura" (click)="openReadingModal(null, 'Registrar')"
+                    class="flex px-6 py-4 gap-3 text-orange-400 bg-stone-900/90 rounded-md btn-books">
+                    <mat-icon fontIcon="add"></mat-icon>Registrar Leitura
+                </button>
+            </div>
+        </div>
+
+        <div class="flex flex-col mt-2 mb-4">
+            <div class="table-shadow">
+                <table mat-table [dataSource]="dataSourceReading" matSort class="striped-table">
+                    <ng-container matColumnDef="readingDate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="centered-sorted-header !font-bold">
+                            Data da Leitura </th>
+                        <td mat-cell *matCellDef="let read" class="even-row odd-row txt-center">
+                            {{read.getReadingDate()
+                            | date: 'dd/MM/yyyy'}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="title">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="!font-bold"> Título </th>
+                        <td mat-cell *matCellDef="let read" class="even-row odd-row"> {{read.getBook().title}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="authors">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="!font-bold"> Autor </th>
+                        <td mat-cell *matCellDef="let read" class="even-row odd-row"> {{read.getAuthors()}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="genre">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="centered-sorted-header !font-bold">
+                            Gênero </th>
+                        <td mat-cell *matCellDef="let read" class="even-row odd-row" class="txt-center"> {{
+                            read.getBook()?.genre?.name || 'N/A' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="categories">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="centered-sorted-header !font-bold">
+                            Categorias </th>
+                        <td mat-cell *matCellDef="let read" class="even-row odd-row" class="txt-center"> {{
+                            read.getCategories() || 'N/A' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="pages">
+                        <th class="centered-sorted-header !font-bold" mat-header-cell *matHeaderCellDef mat-sort-header>
+                            Páginas </th>
+                        <td mat-cell *matCellDef="let read" class="even-row odd-row txt-center">
+                            {{read.getBook().pages}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="description">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="!font-bold"> Descrição </th>
+                        <td mat-cell *matCellDef="let read" matTooltip="Descrição completa"
+                            class="even-row odd-row cursor-pointer descriptionText"
+                            (click)="openDescriptionModal(read.getBook().title, read.getBook().description)">
+                            {{read.getBook().description}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="rating">
+                        <th class="centered-sorted-header !font-bold" mat-header-cell *matHeaderCellDef mat-sort-header>
+                            Avaliação
+                        </th>
+                        <td mat-cell *matCellDef="let read" class="even-row odd-row txt-center"
+                            matTooltip="{{read.getRating()}}/5">
+                            <mat-icon class="star-icon"
+                                [ngClass]="{'star-filled': read.getRating() >= 1, 'star-border': read.getRating() < 1}">star</mat-icon>
+                            <mat-icon class="star-icon"
+                                [ngClass]="{'star-filled': read.getRating() >= 2, 'star-border': read.getRating() < 2}">star</mat-icon>
+                            <mat-icon class="star-icon"
+                                [ngClass]="{'star-filled': read.getRating() >= 3, 'star-border': read.getRating() < 3}">star</mat-icon>
+                            <mat-icon class="star-icon"
+                                [ngClass]="{'star-filled': read.getRating() >= 4, 'star-border': read.getRating() < 4}">star</mat-icon>
+                            <mat-icon class="star-icon"
+                                [ngClass]="{'star-filled': read.getRating() >= 5, 'star-border': read.getRating() < 5}">star</mat-icon>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef disableSort
+                            class="centered-sorted-header header-acttion cursor-pointer !font-bold"> Ações </th>
+                        <td mat-cell *matCellDef="let read" class="even-row odd-row" class="txt-center">
+                            <button mat-icon-button color="primary" matTooltip="Editar Leitura"
+                                (click)="openReadingModal(read, 'Atualizar')">
+                                <mat-icon class="editIcon">edit</mat-icon>
+                            </button>
+                            <button mat-icon-button matTooltip="Remover Leitura"
+                                (click)="openReadingModal(read, 'Remover')">
+                                <mat-icon class="text-red-600 deleteIcon">delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-darkTheme"></tr>
+                    <tr mat-row *matRowDef="let book; columns: displayedColumns;"></tr>
+
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="h-14 text-center" colspan="100%"> {{ hasText ? 'Nenhum registro encontrado para o
+                            filtro: '.concat(fil.value) : 'Nenhum registro encontrado' }} </td>
+                    </tr>
+                </table>
+
+                <mat-paginator [pageSizeOptions]="[10, 5, 20, 100]"></mat-paginator>
+            </div>
+        </div>
+
+    </div>
+</div>
